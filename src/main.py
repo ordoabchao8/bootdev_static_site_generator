@@ -1,19 +1,10 @@
-from textnode import TextNode, TextType
-from htmlnode import HTMLNode
+from copystatic import copy_static
+from generate_page import generate_page_recursive
 
 def main():
-    text_node = TextNode("This is some anchor text", TextType.LINK, "https://boot.dev")
-    print(text_node)
+    copy_static("static")
+    generate_page_recursive("content", "template.html", "public")
     
-    html_node = HTMLNode(
-        "<a>",
-        "link", 
-        None, 
-        {"href": "https://www.google.com", "target": "_blank"},
-        )
-    
-    print(html_node)
-    print(html_node.props_to_html())
     
 if __name__ == "__main__":
     main()
