@@ -1,7 +1,7 @@
 import os
 import shutil
 
-def copy_static(source_dir, destination_dir="public"):
+def copy_static(source_dir, destination_dir="docs"):
     if os.path.exists(destination_dir):
         shutil.rmtree(destination_dir)
     copy_files_recursively(source_dir, destination_dir)

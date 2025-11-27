@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from markdown_blocks import markdown_to_html_node
 
-def generate_page(source_path, template_path, destination_path):
+def generate_page(source_path, template_path, destination_path, basepath):
     print(f"Generating page from {source_path} to {destination_path} using {template_path}")
     with open(source_path, "r") as file:
         markdown_content = file.read()
@@ -15,6 +15,8 @@ def generate_page(source_path, template_path, destination_path):
     title = extract_title(markdown_content)
     template_content = template_content.replace("{{ Title }}", title)
     template_content = template_content.replace("{{ Content }}", html_nodes)
+    template_content = template_content.replace('href="/', f'href="{basepath}')
+    template_content = template_content.replace('src="/', f'src="{basepath}')
     
     dirpath = os.path.dirname(destination_path)
     
@@ -24,7 +26,7 @@ def generate_page(source_path, template_path, destination_path):
     with open(destination_path, "w") as file:
         file.write(template_content)
 
-def generate_page_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_page_recursive(dir_path_content, template_path, dest_dir_path, basepath):
     content_dir = Path(dir_path_content)
     dest_dir = Path(dest_dir_path)
     dest_dir.mkdir(parents=True, exist_ok=True)
@@ -32,10 +34,10 @@ def generate_page_recursive(dir_path_content, template_path, dest_dir_path):
     for path in content_dir.iterdir():
         if path.is_file() and path.suffix == ".md":
             dest_file = dest_dir / (path.stem + ".html")
-            generate_page(path, template_path, dest_file)
+            generate_page(path, template_path, dest_file, basepath)
         if path.is_dir():
             dest_subdir = dest_dir / path.name
-            generate_page_recursive(path, template_path, dest_subdir)
+            generate_page_recursive(path, template_path, dest_subdir, basepath)
        
 def extract_title(markdown: str) -> str:    
     lines = markdown.split("\n")
